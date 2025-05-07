@@ -22,10 +22,13 @@ jobs:
       - name: Push da imagem para Heroku
         run: docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
 
+      - name: Instalar Heroku CLI
+        run: curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Login no Heroku via CLI
+        run: echo "${{ secrets.HEROKU_API_KEY }}" | heroku auth:token
+
       - name: Release do container
-        run: |
-          curl -n -X POST https://api.heroku.com/apps/${{ secrets.HEROKU_APP_NAME }}/releases \
-          -H "Content-Type: application/json" \
-          -H "Accept: application/vnd.heroku+json; version=3.docker-releases" \
-          -H "Authorization: Bearer ${{ secrets.HEROKU_API_KEY }}" \
-          -d '{"updates":[{"type":"web","docker_image":"'"$(docker inspect registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web --format={{.Id}})"'"}]}'
+        run: heroku container:release web --app ${{ secrets.HEROKU_APP_NAME }}
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
