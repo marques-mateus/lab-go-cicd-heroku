@@ -1,0 +1,20 @@
+basePath: /api
+host: localhost:8080
+info:
+  contact: {}
+  description: Esta é uma API simples com Gin e Swagger
+  title: Exemplo Simples API
+  version: "1.0"
+paths:
+  /ping:
+    get:
+      description: Retorna pong
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+      summary: Ping
+      tags:
+      - ping
+swagger: "2.0"
